@@ -1,0 +1,413 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    background-color:#E4E4E4;
+    background-image:linear-gradient(top, #A7A7A7 0%, #E4E4E4 51%);
+    font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
+    font-size:12px;
+    height:100vh;
+    margin:0px;
+    padding:0px;
+    /* Padding to avoid the "unsafe" areas behind notches in the screen */
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-right, 0px);
+    text-transform:uppercase;
+    width:100%;
+}
+
+/* Portrait layout (default) */
+.app {
+    background:url(../img/logo.png) no-repeat center top; /* 170px x 200px */
+    position:absolute;             /* position in the center of the screen */
+    left:50%;
+    top:50%;
+    height:50px;                   /* text area height */
+    width:225px;                   /* text area width */
+    text-align:center;
+    padding:180px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
+    margin:-115px 0px 0px -112px;  /* offset vertical: half of image height and text area height */
+                                   /* offset horizontal: half of text area width */
+}
+
+/* Landscape layout (with min-width) */
+@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+    .app {
+        background-position:left center;
+        padding:75px 0px 75px 170px;  /* padding-top + padding-bottom + text area = image height */
+        margin:-90px 0px 0px -198px;  /* offset vertical: half of image height */
+                                      /* offset horizontal: half of image width and text area width */
+    }
+}
+
+h1 {
+    font-size:24px;
+    font-weight:normal;
+    margin:0px;
+    overflow:visible;
+    padding:0px;
+    text-align:center;
+}
+
+.event {
+    border-radius:4px;
+    -webkit-border-radius:4px;
+    color:#FFFFFF;
+    font-size:12px;
+    margin:0px 30px;
+    padding:2px 0px;
+}
+
+.event.listening {
+    background-color:#333333;
+    display:block;
+}
+
+.event.received {
+    background-color:#4B946A;
+    display:none;
+}
+
+@keyframes fade {
+    from { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
+
+@-webkit-keyframes fade {
+    from { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
+
+.blink {
+    animation:fade 3000ms infinite;
+    -webkit-animation:fade 3000ms infinite;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+div{
+    display: block;
+}
+body{
+    background-image: linear-gradient(rgba(62, 20, 20, 0.4), rgba(62, 20, 20, 0.4)), url(../back.jpg);
+    background-size: cover;
+    background-position: center;
+    font-weight: 300;
+    position: relative;
+    height: 100vh;
+    color: #555;
+    background-attachment: fixed;
+}
+.gameboard{
+    width: 80%;
+    max-width: 1024px;
+    height: auto;
+    background: #FFF;
+    margin: 0 auto;
+    position: relative;
+    top: calc(50% - 300px);
+}
+
+.playboard{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.playboard .player{
+    height: 100%;
+    flex: 1;
+    padding-bottom: 100px;
+}
+
+.playboard .player.active{
+    background: #f7f7f7;
+}
+
+.playboard .player.active .player-label::after {
+    content: "\2022";
+    font-size: 47px;
+    position: absolute;
+    color: #EB4D4D;
+    top: 6px;
+    margin-left: 10px;
+}
+
+.player-label {
+    padding-top: 20px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 300;
+    margin: 100px 0 10px 0;
+    position: relative;
+}
+
+.player-score {
+    font-size: 100px;
+    text-align: center;
+    font-weight: 100;
+    color: #EB4D4D;
+}
+
+.player-round {
+    width: 150px;
+    background: #EB4D4D;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 150px;
+    color: #fff;
+    padding: 5px;
+}
+
+.player-round label {
+    font-size: 14px;
+    display: block;
+}
+
+.player-round div {
+    font-size: 30px;
+}
+
+.controls-top,.controls-bottom {
+    position: absolute;
+}
+
+button {
+    position: absolute;
+    width: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #777;
+    background: none;
+    border: none;
+    font-family: Lato;
+    font-size: 20px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 300;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button:disabled {
+    opacity: 0.5;
+}
+
+button:hover { color: #222; }
+button:hover i { margin-right: 20px; }
+
+button:focus {
+    outline: none;
+}
+
+i {
+    color: #EB4D4D;
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 32px;
+    line-height: 1;
+    vertical-align: text-top;
+    margin-top: -4px;
+    transition: margin 0.3s;
+}
+
+.btn-new { top: 45px;}
+.btn-roll { top: 403px;}
+.btn-hold { top: 467px;}
+
+.hide{
+    display: none;
+}
+
+.dice{
+    position: absolute;
+    left: 50%;
+    top: 178px;
+    margin-left: -50px;
+    height: 100px;
+    box-shadow: 0px 10px 60px rgba(0, 0, 0, 0.20);
+    border-radius: 4px;
+}
+
+.rotate-center {
+    -webkit-animation: rotate-hor-center 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+    animation: rotate-hor-center 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-4-30 21:43:0
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info.
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation rotate-hor-center
+ * ----------------------------------------
+ */
+@-webkit-keyframes rotate-hor-center {
+    0% {
+        -webkit-transform: rotateX(0);
+        transform: rotateX(0);
+    }
+    100% {
+        -webkit-transform: rotateX(-360deg);
+        transform: rotateX(-360deg);
+    }
+}
+@keyframes rotate-hor-center {
+    0% {
+        -webkit-transform: rotateX(0);
+        transform: rotateX(0);
+    }
+    100% {
+        -webkit-transform: rotateX(-360deg);
+        transform: rotateX(-360deg);
+    }
+}
+
+button,
+textarea,
+input,
+select,
+a{
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+#full-body{
+    width: 100%;
+    position: fixed;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    top:0;
+    left: 0;
+    z-index: 1;
+}
+
+#full-body .content{
+    width: 300px;
+    margin: 0 auto;
+    background: #fff;
+    top: 50%;
+    position: relative;
+    transform: translateY(-50%);
+    padding: 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-align: center;
+}
+
+#full-body .content .text {
+    font-size: 20px;
+    line-height: 40px;
+}
+
+#full-body .content img {
+    width: 128px;
+}
+
+@media only screen and (max-width: 900px) {
+    body{
+        background: none;
+        display: flex;
+    }
+
+    .gameboard{
+        width: 100%;
+        top:0;
+    }
+    .player-round{
+        margin: 0;
+        margin-top: 150px;
+    }
+    .player-round-0{
+        float: left;
+    }
+    .player-round-1{
+        float: right;
+    }
+    .playboard .player.active .player-label::after{
+        top: 6px;
+    }
+    .btn-roll { top: 453px;}
+    .btn-hold { top: 507px;}
+}
+
+@media only screen and (max-width: 900px) and (orientation: landscape) {
+    .player-label{
+        margin-top: 20px;
+    }
+    .player-round{
+        margin-top: 60px;
+    }
+    .dice{
+        top: 120px;
+    }
+    .btn-roll { top: 253px;}
+    .btn-hold { top: 307px;}
+
+}
+
+@media only screen and (max-width: 480px) {
+    .player-round{
+        margin-top: 80px;
+    }
+    .playboard .player{
+        padding-bottom: 200px;
+    }
+    .player-score{
+        font-size: 70px;
+    }
+    .player-score-0{
+        text-align: left;
+        padding-left: 10px;
+    }
+    .player-score-1{
+        text-align: right;
+        padding-right: 10px;
+    }
+    .dice{
+        height: 70px;
+        margin-left: -35px;
+    }
+}
+

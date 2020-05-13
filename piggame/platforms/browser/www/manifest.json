@@ -1,0 +1,18 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "PigGame",
+  "short_name": "PigGame",
+  "version": "io.com.piggame",
+  "description": "PigGame.",
+  "author": "Rahul Sharma",
+  "icons": [
+    {
+      "src": "res/icon.png",
+      "type": "image/png",
+      "sizes": "undefinedxundefined"
+    }
+  ],
+  "start_url": "index.html",
+  "theme_color": "#EB4D4D"
+}
